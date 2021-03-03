@@ -40,7 +40,7 @@ def generate_signal(length_seconds, sampling_rate, frequencies_list, func=[], tr
     """
     
     
-    frequencies_list = np.array(frequencies_list, dtype=object) 
+    frequencies_list = np.array(frequencies_list, dtype=object)
     nf=frequencies_list.shape[0]
     
     #On complete func pour matcher avec les fréquences fournises
@@ -48,7 +48,9 @@ def generate_signal(length_seconds, sampling_rate, frequencies_list, func=[], tr
     while nf>len(func) :
         func.append('sin')
         
-    npnts = sampling_rate*length_seconds  # number of time samples # i need it to be pair
+    npnts = sampling_rate*length_seconds  # number of time samples 
+    
+    
     time = np.arange(0, npnts)/sampling_rate
     signal = np.zeros(npnts)
     
