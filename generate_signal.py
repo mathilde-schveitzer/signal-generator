@@ -5,6 +5,7 @@ Created on Mon Mar  1 16:42:02 2021
 @author: mathi
 """
 
+import csv
 import numpy as np
 import random as rd
 import matplotlib.pyplot as plt
@@ -15,7 +16,6 @@ def generate_signal(length_seconds, sampling_rate, frequencies_list, func=[], tr
     
     Args:
         length_seconds : int
-            Must be pair in order to use disturb_signal
             Duration of signal in seconds (i.e. `10` for a 10-seconds signal)
         sampling_rate : int
             The sampling rate of the signal.
@@ -39,8 +39,7 @@ def generate_signal(length_seconds, sampling_rate, frequencies_list, func=[], tr
             Generated signal, a numpy array of length `sampling_rate*length_seconds`
     """
     
-    assert length_seconds%2==0, "length_seconds must be divisible by 2"
-    rd.seed=1024
+    
     frequencies_list = np.array(frequencies_list, dtype=object) 
     nf=frequencies_list.shape[0]
     
@@ -59,10 +58,10 @@ def generate_signal(length_seconds, sampling_rate, frequencies_list, func=[], tr
     if alea==True : 
         "Première idée : on tire aléatoirement les coefs selon une loi gaussienne dont les caractéristiques sont tirés aléatiorement"
         for k in range(nf) :
-        
+            rd.seed=1024
             mu=rd.uniform(bornes[0],bornes[1])
             sigma=(rd.uniform(bornes[0],bornes[1]))**2
-            theta=rd.gauss(mu,sigma)
+            theta=rd.gauss(mu,sigma)**2 #i wanted a positiv amplitude
         
             if func[k] == "cos":
                 signal = signal + theta*np.cos(2*np.pi*frequencies_list[k]*time)
@@ -90,7 +89,12 @@ def generate_signal(length_seconds, sampling_rate, frequencies_list, func=[], tr
 
 
 def perturbation(signal,time,length_seconds):
-    
+    '''creates (and shows) a linear piecewise perturbation that matchs with the signal
+    Args : 
+        signal ; array, the signal you want to disturb
+        time : an array, the temporal values that correspond to the numpy signal
+        length_seconds : int, duration of signal'''
+    rd.seed=1024
     u=rd.uniform(0,length_seconds)
     print(u)
     
@@ -110,5 +114,21 @@ def perturbation(signal,time,length_seconds):
     plt.show()
     
     return(perturbation)
-
-
+    
+def register_signal(signal,time,identifiant) :
+    '''Stores the signal in a csv file
+    Args :
+        - signal : an array which cointains signal(s) values (eventually multidimensionnel)
+        - time : an array which contains the time values that match with signal
+        - identifiant : will be the name of your csv file'''
+    name='{}.csv'.format(identifiant)
+    with open(name, "w", newline='') as csvfile :
+        writer=csv.writer(csvfile, delimiter=',')
+        writer.writerow(time)
+        if np.size(signal.shape)>1 : #signal eventuellement multidimensionnel
+            i=signal.shape[1] #it
+            for k in range(i):
+                writer.writerow(signal) # generalisation par boucles iteratives
+        else :
+            writer.writerow(signal)
+    return(1)  
