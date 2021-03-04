@@ -117,7 +117,7 @@ def perturbation(signal,time,length_seconds):
     
     return(perturbation)
     
-def register_signal(signal,time,identifiant) :
+def register_signal(signal,identifiant) :
     '''Stores the signal in a csv file
     Args :
         - signal : an array which cointains signal(s) values (eventually multidimensionnel)
@@ -126,7 +126,6 @@ def register_signal(signal,time,identifiant) :
     name='{}.csv'.format(identifiant)
     with open(name, "w", newline='') as csvfile :
         writer=csv.writer(csvfile, delimiter=',')
-        writer.writerow(time)
         if np.size(signal.shape)>1 : #signal eventuellement multidimensionnel
             i=signal.shape[1] #it
             for k in range(i):
@@ -134,3 +133,14 @@ def register_signal(signal,time,identifiant) :
         else :
             writer.writerow(signal)
     return(1)  
+
+def read_signal(filename):
+    name='{}.csv'.format(filename)
+    x_tl=[]
+    with open(name, "r") as file:
+        reader = csv.reader(file, delimiter=',')
+        #un peu space mais l'idée est de se débarasser des en-têtes
+        for line in reader:
+            x_tl.append(line)
+    print(x_tl)
+    return(1)
