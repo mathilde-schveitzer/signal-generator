@@ -84,7 +84,7 @@ def generate_signal(length_seconds, sampling_rate, frequencies_list, func=[], tr
         signal = signal + noise
 
     if plot:
-        plt.plot(time, signal.T)
+        plt.plot(time, signal.T)  
         plt.show()
        
     return signal,time,length_seconds
